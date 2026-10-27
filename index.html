@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html><html lang="en"><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <title>Web Untangle</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -39,14 +39,6 @@ h1{margin:0;text-align:center;font:400 clamp(2rem,7vw,3.2rem)/1.05 var(--display
 .silk.broken{stroke:#ffc766;stroke-width:.7}
 .replay{font:inherit;font-family:var(--display);font-size:1.15rem;min-height:44px;padding:.5rem 1.6rem;color:var(--bone);background:rgba(7,5,13,.8);border:1px solid var(--lantern);border-radius:999px;cursor:pointer;box-shadow:0 0 16px rgba(255,170,60,.35);animation:cin 1.2s ease both}
 .replay:focus-visible{outline:2px solid var(--lantern);outline-offset:3px}
-/* hidden admin door: tap the title three times */
-.admin{position:fixed;inset:0;z-index:40;display:flex;align-items:center;justify-content:center;background:rgba(8,6,14,.86);padding:0 16px}
-.acard{width:min(100%,320px);background:#160f22;border:1px solid var(--edge);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:10px;color:var(--bone)}
-.acard label{font-family:var(--display);font-size:1.3rem}
-.acard input{font:inherit;font-size:18px;padding:8px 10px;border-radius:8px;border:1px solid var(--edge);background:var(--ink);color:var(--bone)}
-.arow{display:flex;gap:8px;justify-content:flex-end}
-.arow button{font:inherit;font-size:16px;min-height:44px;padding:6px 16px;border-radius:999px;border:1px solid var(--lantern);background:rgba(7,5,13,.8);color:var(--bone);cursor:pointer}
-.acard p{margin:0;min-height:1.2em;font-size:15px;color:#ff9a8a;font-style:italic}
 @media (prefers-reduced-motion:reduce){.msg.on,.coords,.replay{animation:none}.silk{transition:none}}
 </style>
 <h1>Web Untangle</h1>
@@ -58,12 +50,6 @@ h1{margin:0;text-align:center;font:400 clamp(2rem,7vw,3.2rem)/1.05 var(--display
  <p class="coords" id="coords" hidden></p>
  <button class="replay" id="replay" type="button" hidden>↺ Replay</button>
 </main>
-<div class="admin" id="admin" hidden><div class="acard" role="dialog" aria-modal="true" aria-labelledby="apwl">
-  <label id="apwl" for="apw">Password</label>
-  <input id="apw" type="password" autocomplete="off">
-  <p id="aerr" role="status"></p>
-  <div class="arow"><button id="acancel" type="button">Cancel</button><button id="aok" type="button">Open</button></div>
-</div></div>
 <div class="ctl"><button class="btn" id="music" type="button" aria-pressed="false">Spooky music: off</button></div>
 <p class="sr" id="live" role="status" aria-live="polite"></p>
 <script>
@@ -383,16 +369,6 @@ musicBtn.addEventListener('click',function(){
 });
 // replay appears only once every web is untangled, and always starts again from the first web
 $('#replay').addEventListener('click',function(){$('#replay').hidden=true;startLevel(0);window.scrollTo({top:0,behavior:'smooth'});});
-// admin door: three quick taps on the title ask for the password; the right one untangles the last web straight away
-const ADMIN=217580182;let titleTaps=[];
-function adminHash(t){let h=2166136261;t="jar-admin|"+t;for(let i=0;i<t.length;i++){h^=t.charCodeAt(i);h=Math.imul(h,16777619)>>>0;}return h>>>0;}
-$('h1').addEventListener('pointerdown',function(){const now=performance.now();titleTaps=titleTaps.filter(function(t){return now-t<1500;});titleTaps.push(now);
-  if(titleTaps.length>=3){titleTaps=[];$('#aerr').textContent='';$('#apw').value='';$('#admin').hidden=false;setTimeout(function(){$('#apw').focus();},0);}});
-function adminTry(){Sound.prime();if(adminHash($('#apw').value)!==ADMIN){$('#aerr').textContent="That's not it.";$('#apw').select();return;}
-  $('#admin').hidden=true;$('#replay').hidden=true;startLevel(LEVELS.length-1);P=sol.map(function(q){return q.slice();});draw();setTimeout(function(){check(true);},400);}
-$('#aok').addEventListener('click',adminTry);$('#acancel').addEventListener('click',function(){$('#admin').hidden=true;});
-$('#apw').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();adminTry();}else if(e.key==='Escape')$('#admin').hidden=true;});
-window.__wu={solve:function(){P=sol.map(function(q){return q.slice();});draw();check(true);},get level(){return LV;},get done(){return done;}};
 startLevel(0);
 })();
 </script>
